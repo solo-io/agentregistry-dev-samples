@@ -108,11 +108,11 @@ def get_mcp_tools(
 
         if headers:
             connection_params = StreamableHTTPConnectionParams(
-                url=url, headers=headers, terminate_on_close=terminate_on_close
+                url=url, headers=headers, terminate_on_close=terminate_on_close, timeout=10.0
             )
         else:
             connection_params = StreamableHTTPConnectionParams(
-                url=url, terminate_on_close=terminate_on_close
+                url=url, terminate_on_close=terminate_on_close, timeout=10.0
             )
 
         if predicate is not None:
