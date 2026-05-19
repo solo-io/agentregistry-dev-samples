@@ -1,0 +1,10 @@
+[project]
+name = "agentdemo"
+version = "0.1.0"
+description = "Dice-rolling sample ADK-Python agent."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "google-adk==1.25.1",
+  "anthropic[bedrock]>=0.40",
+]
