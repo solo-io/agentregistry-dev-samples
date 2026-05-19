@@ -1,0 +1,19 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: nightlyagentdemo
+  version: "0.1.0"
+spec:
+  # Set this to a registry path you can push to, e.g.
+  #   ghcr.io/<your-github-user>/agentdemo:0.1.0
+  image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/nightly/agentdemo:0.1.0
+  language: python
+  framework: adk
+  # Model auth is handled by the in-repo bedrock_model.py adapter using boto3
+  # credentials — the SSO session locally, the workload identity on AgentCore.
+  # No API keys.
+  modelProvider: bedrock
+  modelName: us.anthropic.claude-sonnet-4-6
+  description: Dice-rolling sample ADK-Python agent.
+  telemetryEndpoint: http://k8s-nightly-agentreg-ed66f232b3-371fefcf34ff56b0.elb.us-east-1.amazonaws.com:4318
+  mcpServers: []
