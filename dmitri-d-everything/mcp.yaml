@@ -1,0 +1,17 @@
+apiVersion: ar.dev/v1alpha1
+kind: MCPServer
+metadata:
+  name: dev.soloio.are/dmitri-d-everything
+spec:
+  description: Sample MCP server (now, add, reverse) deployed from source.
+  source:
+    package:
+      identifier: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/dmitri-d/everything:0.1.0
+      registryType: oci
+      transport:
+        type: stdio
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-dmitri-d
+      subfolder: dmitri-d-everything
+  title: dmitri-d-everything
