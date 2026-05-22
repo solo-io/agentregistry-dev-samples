@@ -1,0 +1,19 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: demoagentdemo
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  modelName: us.anthropic.claude-sonnet-4-6
+  modelProvider: bedrock
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/latest/agentdemo:0.1.0
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-demo
+      subfolder: demoagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: dev.soloio.are/test-mcp-server
+    - kind: MCPServer
+      name: dev.soloio.are/demo-everything
