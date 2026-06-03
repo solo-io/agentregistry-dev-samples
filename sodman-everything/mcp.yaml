@@ -1,0 +1,20 @@
+apiVersion: ar.dev/v1alpha1
+kind: MCPServer
+metadata:
+  name: sodman-everything
+spec:
+  description: Sample MCP server (now, add, reverse) deployed from source.
+  source:
+    package:
+      identifier: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/sodman/everything:v2026.5.4-23-g50a61463
+      registryType: oci
+      serverName: sodman-everything
+      transport:
+        path: /mcp
+        port: 3000
+        type: http
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-sodman
+      subfolder: sodman-everything
+  title: sodman-everything
