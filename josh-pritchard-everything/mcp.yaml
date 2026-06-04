@@ -1,0 +1,20 @@
+apiVersion: ar.dev/v1alpha1
+kind: MCPServer
+metadata:
+  name: josh-pritchard-everything
+spec:
+  description: Sample MCP server (now, add, reverse) deployed from source.
+  source:
+    package:
+      identifier: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/josh-pritchard/everything:v2026.5.4-26-g4661d9e7
+      registryType: oci
+      serverName: josh-pritchard-everything
+      transport:
+        path: /mcp
+        port: 3000
+        type: http
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-josh-pritchard
+      subfolder: josh-pritchard-everything
+  title: josh-pritchard-everything
