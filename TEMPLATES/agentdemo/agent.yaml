@@ -2,18 +2,19 @@ apiVersion: ar.dev/v1alpha1
 kind: Agent
 metadata:
   name: REPLACE_ME_NAME
-  version: "0.1.0"
+  # metadata.tag is optional — the registry defaults missing tag to "latest".
+  # Set it explicitly when you cut a release (e.g. tag: stable).
 spec:
-  # Set this to a registry path you can push to, e.g.
-  #   ghcr.io/<your-github-user>/agentdemo:0.1.0
-  image: REPLACE_ME
-  language: python
-  framework: adk
+  source:
+    # Set this to a registry path you can push to, e.g.
+    #   ghcr.io/<your-github-user>/agentdemo:0.1.0
+    image: REPLACE_ME
   # Model auth is handled by the in-repo bedrock_model.py adapter using boto3
   # credentials — the SSO session locally, the workload identity on AgentCore.
   # No API keys.
   modelProvider: bedrock
   modelName: us.anthropic.claude-sonnet-4-6
   description: Dice-rolling sample ADK-Python agent.
-  telemetryEndpoint: REPLACE_ME_OTEL_ENDPOINT
   mcpServers: []
+# Note: framework / language live in arctl.yaml (build-time, local-only).
+# telemetryEndpoint lives on the Runtime resource (not the Agent).

@@ -2,15 +2,15 @@ apiVersion: ar.dev/v1alpha1
 kind: MCPServer
 metadata:
   name: REPLACE_ME_NAMESPACE/everything-server
-  version: "0.1.0"
+  # metadata.tag is optional — the registry defaults missing tag to "latest".
 spec:
   title: everything-server
   description: Demo MCP server exposing echo, now, add, and reverse tools.
-  packages:
-    - registryType: oci
+  source:
+    package:
+      registryType: oci
       # Set this to a registry path you can push to, e.g.
       #   ghcr.io/<your-github-user>/everything-server:0.1.0
       identifier: REPLACE_ME_IMAGE
-      version: "0.1.0"
       transport:
         type: stdio
