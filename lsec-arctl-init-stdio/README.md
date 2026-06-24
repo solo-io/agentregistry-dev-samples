@@ -1,0 +1,196 @@
+# lsec-arctl-init-stdio
+
+lsec-arctl-init-stdio is a Model Context Protocol (MCP) server built with FastMCP featuring dynamic tool loading.
+
+## Features
+
+- **Dynamic Tool Loading**: Tools are automatically discovered and loaded from `src/tools/`
+- **One Tool Per File**: Each tool is a single file with a function matching the filename
+- **FastMCP Integration**: Leverages FastMCP for robust MCP protocol handling
+- **Configuration Management**: Tool-specific configuration via `mcp.yaml`
+- **Fail-Fast**: Server won't start if any tool fails to load
+- **Auto-Generated Tests**: Automatic test generation for tool validation
+
+## Project Structure
+
+```
+src/
+├── tools/              # Tool implementations (one file per tool)
+│   ├── echo.py         # Example echo tool
+│   └── __init__.py     # Auto-generated tool registry
+├── core/               # Dynamic loading framework
+│   ├── server.py       # Dynamic MCP server
+│   └── utils.py        # Shared utilities
+└── main.py             # Entry point
+mcp.yaml               # Configuration file
+tests/                  # Generated tests
+```
+
+## Quick Start
+
+### Option 1: Local Development (with Python/uv)
+
+1. **Install Dependencies**:
+   ```bash
+   uv sync
+   ```
+
+2. **Run the Server**:
+   ```bash
+   # HTTP mode (default; binds localhost:3000)
+   uv run python src/main.py
+
+   # Stdio mode
+   uv run python src/main.py --transport stdio
+
+   # Custom port
+   uv run python src/main.py --port 8080
+   ```
+
+3. **Add New Tools**:
+   ```bash
+   # Create a new tool (no tool types needed!)
+   arctl mcp add-tool weather
+   
+   # The tool file will be created at src/tools/weather.py
+   # Edit it to implement your tool logic
+   ```
+
+### Option 2: Docker-Only Development (no local Python/uv required)
+
+1. **Build Docker Image**:
+   ```bash
+   arctl build --verbose
+   ```
+
+2. **Run in Container** (Dockerfile sets `HOST=0.0.0.0` so the http default is reachable):
+   ```bash
+   # HTTP (default)
+   docker run -p 3000:3000 lsec-arctl-init-stdio:latest
+
+   # Stdio (pipe to an MCP client)
+   docker run -i lsec-arctl-init-stdio:latest --transport stdio
+   ```
+
+3. **Add New Tools**:
+   ```bash
+   # Create a new tool
+   arctl mcp add-tool weather
+
+   # Edit the tool file, then rebuild
+   arctl build
+   ```
+
+## Transport Modes
+
+The server defaults to HTTP. Use `--transport stdio` to switch.
+
+```bash
+# HTTP (default; binds localhost:3000 — set HOST=0.0.0.0 to bind all interfaces)
+python src/main.py
+
+# Stdio
+python src/main.py --transport stdio
+
+# Custom host and port
+python src/main.py --host 0.0.0.0 --port 8080
+```
+
+## Creating Tools
+
+### Basic Tool Structure
+
+Each tool is a Python file in `src/tools/` containing a function decorated with `@mcp.tool()`:
+
+```python
+# src/tools/weather.py
+from core.server import mcp
+from core.utils import get_tool_config, get_env_var
+
+@mcp.tool()
+def weather(location: str) -> str:
+    """Get weather information for a location."""
+    
+    # Get tool configuration
+    config = get_tool_config("weather")
+    api_key = get_env_var(config.get("api_key_env", "WEATHER_API_KEY"))
+    base_url = config.get("base_url", "https://api.openweathermap.org/data/2.5")
+    
+    # TODO: Implement weather API call
+    return f"Weather for {location}: Sunny, 72°F"
+```
+
+### Tool Examples
+
+The generated tool template includes commented examples for common patterns:
+
+```python
+# HTTP API calls
+# async with httpx.AsyncClient() as client:
+#     response = await client.get(f"{base_url}/weather?q={location}&appid={api_key}")
+#     return response.json()
+
+# Database operations  
+# async with asyncpg.connect(connection_string) as conn:
+#     result = await conn.fetchrow("SELECT * FROM weather WHERE location = $1", location)
+#     return dict(result)
+
+# File processing
+# with open(file_path, 'r') as f:
+#     content = f.read()
+#     return {"content": content, "size": len(content)}
+```
+
+## Configuration
+
+Configure tools in `mcp.yaml`:
+
+```yaml
+tools:
+  weather:
+    api_key_env: "WEATHER_API_KEY"
+    base_url: "https://api.openweathermap.org/data/2.5"
+    timeout: 30
+  
+  database:
+    connection_string_env: "DATABASE_URL"
+    max_connections: 10
+```
+
+## Testing
+
+Run the generated tests to verify your tools load correctly:
+
+```bash
+uv run pytest tests/
+```
+
+## Development
+
+### Adding Dependencies
+
+Update `pyproject.toml` and run:
+
+```bash
+uv sync
+```
+
+### Code Quality
+
+```bash
+uv run black .
+uv run ruff check .
+uv run mypy .
+```
+
+## Deployment
+
+### Docker
+
+```bash
+# Build image (handles lockfile automatically)
+arctl build
+
+# Run container (HTTP default; -p maps the container's :3000 to the host)
+docker run -p 3000:3000 lsec-arctl-init-stdio:latest
+```

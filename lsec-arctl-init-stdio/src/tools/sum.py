@@ -1,0 +1,27 @@
+"""Example echo tool for lsec-arctl-init-stdio MCP server.
+
+This is an example tool showing the basic structure for FastMCP tools.
+Each tool file should contain a function decorated with @mcp.tool().
+"""
+
+from core.server import mcp
+
+
+@mcp.tool(description="Add two numbers together. Use this tool when you need to sum or add two numbers.")
+def example_sum(a: float | int, b: float | int) -> float | int:
+    """Add two numbers together.
+
+    The tool is prefixed `example_` so it doesn't collide with the
+    near-universal `add`/`sum` exposed by common reference MCP servers
+    (e.g. the @modelcontextprotocol/server-everything demo). Rename to
+    taste once you replace this scaffold with real functionality.
+
+    Args:
+        a: The first number to add
+        b: The second number to add
+
+    Returns:
+        The sum of the two numbers
+    """
+
+    return a + b

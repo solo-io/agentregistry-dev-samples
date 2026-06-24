@@ -1,0 +1,27 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: lsecagentdemo-kagent
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  modelName: us.anthropic.claude-sonnet-4-6
+  modelProvider: bedrock
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/lsec/agentdemo:v2026.6.1-38-gcbe3cc6c
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-lsec
+      subfolder: lsecagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: lsec-arctl-init-http
+    - kind: MCPServer
+      name: lsec-arctl-init-stdio
+    - kind: MCPServer
+      name: lsec-published-stdio-oci
+    - kind: MCPServer
+      name: lsec-published-stdio-npm
+    - kind: MCPServer
+      name: lsec-published-stdio-pypi
