@@ -1,0 +1,27 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: nikolasmattagentdemo-kagent
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  modelName: us.anthropic.claude-sonnet-4-6
+  modelProvider: bedrock
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/nikolasmatt/agentdemo:v2026.6.1-44-g7aee8758
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-nikolasmatt
+      subfolder: nikolasmattagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: nikolasmatt-arctl-init-http
+    - kind: MCPServer
+      name: nikolasmatt-arctl-init-stdio
+    - kind: MCPServer
+      name: nikolasmatt-published-stdio-oci
+    - kind: MCPServer
+      name: nikolasmatt-published-stdio-npm
+    - kind: MCPServer
+      name: nikolasmatt-published-stdio-pypi
