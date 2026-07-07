@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""lcagw-arctl-init-stdio MCP server with dynamic tool loading.
+
+This server automatically discovers and loads tools from the src/tools/ directory.
+Each tool file should contain a function decorated with @mcp.tool().
+
+Usage:
+  python src/main.py --transport stdio
+  python src/main.py --transport http --host 0.0.0.0 --port 3000 [--stateless-http]
+"""
+
+import argparse
+import logging
+import os
+import sys
+from pathlib import Path
+
+# Add src to Python path
+sys.path.insert(0, str(Path(__file__).parent))
+
+from core.server import DynamicMCPServer  # noqa: E402
+
+
+def main() -> None:
+    """Main entry point for the MCP server."""
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="lcagw-arctl-init-stdio MCP Server")
+    parser.add_argument(
+        "--transport",
+        choices=["stdio", "http"],
+        default="http",
+        help="Transport mode: stdio, or http (default: http)"
+    )
+    parser.add_argument(
+        "--host",
+        default=os.getenv("HOST", "localhost"),
+        help="Host to bind to in HTTP mode (default: localhost)"
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=int(os.getenv("PORT", "3000")),
+        help="Port to bind to in HTTP mode (default: 3000)"
+    )
+
+    parser.add_argument(
+        "--stateless-http",
+        action="store_true",
+        default=os.getenv("MCP_STATELESS_HTTP", "false").lower() == "true",
+        help="Enable stateless HTTP mode (default: false)"
+    )
+
+    args = parser.parse_args()
+
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(sys.stderr)
+        ]
+    )
+
+    try:
+        # Create server with dynamic tool loading
+        server = DynamicMCPServer(
+            name="lcagw-arctl-init-stdio",
+            tools_dir="src/tools"
+        )
+
+        # Load tools and start server
+        server.load_tools()
+
+        server.run(transport_mode=args.transport,
+                   host=args.host,
+                   port=args.port,
+                   stateless_http=args.stateless_http)
+
+    except KeyboardInterrupt:
+        print("\nShutting down server...")
+    except Exception as e:
+        print(f"Server error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

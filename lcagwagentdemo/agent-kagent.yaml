@@ -1,0 +1,27 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: lcagwagentdemo-kagent
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  modelName: us.anthropic.claude-sonnet-4-6
+  modelProvider: bedrock
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/lcagw/agentdemo:v2026.6.2-15-ge1d8db58
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-lcagw
+      subfolder: lcagwagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: lcagw-arctl-init-http
+    - kind: MCPServer
+      name: lcagw-arctl-init-stdio
+    - kind: MCPServer
+      name: lcagw-published-stdio-oci
+    - kind: MCPServer
+      name: lcagw-published-stdio-npm
+    - kind: MCPServer
+      name: lcagw-published-stdio-pypi
