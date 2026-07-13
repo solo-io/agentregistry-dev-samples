@@ -1,13 +1,8 @@
 # AgentRegistry Resource Helper
 
-This directory contains a portable plugin fixture for drafting Git-backed
-AgentRegistry `Plugin` resources.
-
-## Layout
-
-- `.claude-plugin/plugin.json` — plugin metadata
-- `skills/agentregistry-plugin-registration/SKILL.md` — registration workflow
-- `commands/register-plugin.md` — optional interactive command
+Portable Claude Code and OpenClaw sample for drafting Git-backed AgentRegistry
+`Plugin` resources. Its shared behavior lives in
+`skills/agentregistry-plugin-registration/SKILL.md`.
 
 ## Local behavior checks
 
@@ -25,12 +20,5 @@ openclaw plugins install ./testplugin --pin
 openclaw agent --local --message 'Use agentregistry-plugin-registration to draft the same Plugin resource.'
 ```
 
-Successful output contains:
-
-```text
-# drafted by agentregistry-resource-helper
-kind: Plugin
-```
-
-The response is one applyable YAML document. Dynamic values are quoted safely,
-and review/apply guidance appears only as YAML comments within that document.
+Successful output is one applyable YAML document containing
+`# drafted by agentregistry-resource-helper` and `kind: Plugin`.
