@@ -31,3 +31,6 @@ Successful output contains:
 # drafted by agentregistry-resource-helper
 kind: Plugin
 ```
+
+The response is one applyable YAML document. Dynamic values are quoted safely,
+and review/apply guidance appears only as YAML comments within that document.
