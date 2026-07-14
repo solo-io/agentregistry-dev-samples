@@ -19,12 +19,5 @@ openclaw plugins install ./testplugin --pin
 openclaw agent --local --message 'Use agentregistry-resource-authoring to draft the same Prompt resource.'
 ```
 
-Validate a generated document locally without credentials or network access:
-
-```bash
-python3 scripts/validate-resource.py prompt.yaml
-cat prompt.yaml | python3 scripts/validate-resource.py -
-```
-
 Successful output is one applyable YAML document containing
 `# drafted by agentregistry-resource-author` and the requested resource kind.
