@@ -19,7 +19,7 @@ OpenClaw:
 ```bash
 openclaw plugins install ./testplugin --pin
 openclaw agent --local --agent main \
-  --message 'Use agentregistry-resource-authoring to draft the same Prompt resource.'
+  --message 'Use agentregistry-resource-authoring to draft a Prompt named demo in namespace default with description "Demo prompt" and content "Answer briefly."'
 ```
 
 The plugin includes the OpenClaw hook-pack pair, `HOOK.md` and `handler.js`,
