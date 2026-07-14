@@ -22,9 +22,10 @@ openclaw agent --local --agent main \
   --message 'Use agentregistry-resource-authoring to draft the same Prompt resource.'
 ```
 
-The plugin includes `HOOK.md` because OpenClaw requires that file for local
-plugin installation. The hook delegates resource authoring to the shared
-skill used by Claude Code.
+The plugin includes the OpenClaw hook-pack pair, `HOOK.md` and `handler.js`,
+because OpenClaw requires both files for local plugin installation. The empty
+handler only satisfies that loader contract; resource authoring is provided by
+the shared skill used by Claude Code.
 
 Successful output is one applyable YAML document containing
 `# drafted by agentregistry-resource-author` and the requested resource kind.

@@ -1,3 +1,10 @@
+---
+name: agentregistry-resource-author
+description: "Loads the AgentRegistry resource authoring skill."
+metadata:
+  { "openclaw": { "emoji": "🧩", "events": [] } }
+---
+
 # AgentRegistry Resource Authoring
 
 When the user asks to author an AgentRegistry resource, use the
