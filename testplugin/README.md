@@ -16,7 +16,8 @@ OpenClaw:
 
 ```bash
 openclaw plugins install ./testplugin --pin
-openclaw agent --local --message 'Use agentregistry-resource-authoring to draft the same Prompt resource.'
+openclaw agent --local --agent main \
+  --message 'Use agentregistry-resource-authoring to draft the same Prompt resource.'
 ```
 
 Successful output is one applyable YAML document containing
