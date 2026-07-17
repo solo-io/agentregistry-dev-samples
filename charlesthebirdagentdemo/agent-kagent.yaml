@@ -1,0 +1,27 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: charlesthebirdagentdemo-kagent
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  modelName: us.anthropic.claude-sonnet-4-6
+  modelProvider: bedrock
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/charlesthebird/agentdemo:v2026.7.0-58-g910bbeb0-arm64
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-charlesthebird
+      subfolder: charlesthebirdagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: charlesthebird-arctl-init-http
+    - kind: MCPServer
+      name: charlesthebird-arctl-init-stdio
+    - kind: MCPServer
+      name: charlesthebird-published-stdio-oci
+    - kind: MCPServer
+      name: charlesthebird-published-stdio-npm
+    - kind: MCPServer
+      name: charlesthebird-published-stdio-pypi
