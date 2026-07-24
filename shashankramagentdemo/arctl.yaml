@@ -1,0 +1,4 @@
+framework: adk
+language: python
+modelProvider: bedrock
+modelName: us.anthropic.claude-sonnet-4-6

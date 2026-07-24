@@ -1,0 +1,20 @@
+{
+  "name": "shashankramagentdemo",
+  "description": "Dice-rolling sample ADK-Python agent.",
+  "url": "http://localhost:8080",
+  "version": "0.0.1",
+  "capabilities": {
+    "streaming": true
+  },
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "skills": [
+    {
+      "id": "shashankramagentdemo",
+      "name": "shashankramagentdemo",
+      "description": "Dice-rolling sample ADK-Python agent.",
+      "tags": ["shashankramagentdemo"]
+    }
+  ]
+}
+
