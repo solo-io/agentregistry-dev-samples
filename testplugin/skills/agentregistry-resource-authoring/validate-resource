@@ -1,0 +1,62 @@
+#!/usr/bin/env node
+// Bundled with the agentregistry-resource-author plugin. Line-based checks
+// on purpose: zero dependencies so the script runs in any harness image
+// that has Node (both Claude Code and OpenClaw images do).
+'use strict';
+
+const fs = require('fs');
+
+const VERSION = '0.1.0';
+
+function fail(msg) {
+  console.error(`ERROR: ${msg}`);
+  process.exit(2);
+}
+
+function readInput() {
+  const arg = process.argv[2];
+  try {
+    return fs.readFileSync(arg !== undefined ? arg : 0, 'utf8');
+  } catch (err) {
+    fail(arg !== undefined ? `cannot read ${arg}: ${err.message}` : `cannot read stdin: ${err.message}`);
+  }
+}
+
+// Returns the trimmed value of the first `key:` line indented under the
+// given top-level block, or null if absent.
+function blockValue(lines, block, key) {
+  let inBlock = false;
+  for (const line of lines) {
+    if (/^\S/.test(line)) inBlock = line.replace(/:.*$/, '') === block;
+    else if (inBlock) {
+      const m = line.match(new RegExp(`^\\s+${key}:\\s*(.*)$`));
+      if (m) return m[1].trim().replace(/^["']|["']$/g, '');
+    }
+  }
+  return null;
+}
+
+const text = readInput();
+const lines = text.split('\n');
+const kindMatch = text.match(/^kind:\s*(\S+)\s*$/m);
+const kind = kindMatch ? kindMatch[1] : null;
+
+const checks = [
+  ['apiVersion is ar.dev/v1alpha1', /^apiVersion:\s*ar\.dev\/v1alpha1\s*$/m.test(text)],
+  ['kind is present', kind !== null],
+  ['metadata.name is non-empty', Boolean(blockValue(lines, 'metadata', 'name'))],
+  ['spec is present', /^spec:\s*$/m.test(text)],
+];
+if (kind === 'Prompt') {
+  checks.push(['spec.description is non-empty (Prompt)', Boolean(blockValue(lines, 'spec', 'description'))]);
+  checks.push(['spec.content is non-empty (Prompt)', Boolean(blockValue(lines, 'spec', 'content'))]);
+}
+
+console.log(`agentregistry-resource-validator v${VERSION} (bundled executable)`);
+let ok = true;
+for (const [name, passed] of checks) {
+  console.log(`${passed ? 'PASS' : 'FAIL'}: ${name}`);
+  if (!passed) ok = false;
+}
+console.log(`RESULT: ${ok ? 'VALID' : 'INVALID'}`);
+process.exit(ok ? 0 : 1);
