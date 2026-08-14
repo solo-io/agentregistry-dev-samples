@@ -1,0 +1,17 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: nightlyagentdemo
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-public-nonprod/dev-walkthrough/nightly/agentdemo:v2026.8.14-nightly
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-nightly
+      subfolder: nightlyagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: nightly-arctl-init-http

@@ -1,0 +1,23 @@
+[project]
+name = "nightlyagentdemo"
+version = "0.1"
+description = "nightlyagentdemo agent"
+readme = "README.md"
+dependencies = [
+  # google-adk 1.25.1 bundles LiteLLM directly; later versions split it into
+  # the [extensions] extra which the kagent-adk:0.8.0-beta6 base image's
+  # uv-managed venv can't pick up via `pip install`. Pin to match the
+  # solo-io/agentregistry-dev-samples reference template.
+  "google-adk==1.25.1",
+  # Bedrock uses anthropic.AnthropicBedrock directly (see bedrock_model.py)
+  # rather than LiteLLM, because LiteLLM's bedrock path drops tool
+  # descriptions which the Bedrock API rejects.
+  "anthropic[bedrock]>=0.40",
+]
+# <3.14: google-adk's opentelemetry-resourcedetector-gcp transitive has no 3.14 wheels.
+requires-python = ">=3.13,<3.14"
+
+[tool.uv]
+# google-adk 1.25.1 needs opentelemetry-resourcedetector-gcp from a pre-release-only
+# range; pin the known-good alpha so a live resolve can't randomly break the build.
+constraint-dependencies = ["opentelemetry-resourcedetector-gcp==1.12.0a0"]
