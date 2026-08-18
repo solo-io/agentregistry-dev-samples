@@ -1,0 +1,17 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: timflannaganagentdemo
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-dev/dev-walkthrough/timflannagan/agentdemo:v2026.7.1-94-ga6634d65
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-timflannagan
+      subfolder: timflannaganagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: timflannagan-arctl-init-http
