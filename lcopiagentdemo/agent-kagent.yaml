@@ -1,0 +1,27 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: lcopiagentdemo-kagent
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-dev/dev-walkthrough/lcopi/agentdemo:v2026.7.1-107-gc3c9d3f9-arm64
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-lcopi
+      subfolder: lcopiagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: lcopi-arctl-init-http-container
+    - kind: MCPServer
+      name: lcopi-arctl-init-stdio
+    - kind: MCPServer
+      name: lcopi-published-stdio-oci
+    - kind: MCPServer
+      name: lcopi-published-stdio-npm
+    - kind: MCPServer
+      name: lcopi-published-stdio-pypi
+  modelProvider: bedrock
+  modelName: us.anthropic.claude-sonnet-4-6
