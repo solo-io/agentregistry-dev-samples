@@ -1,0 +1,27 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: ilackarmsagentdemo-kagent
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-dev/dev-walkthrough/ilackarms/agentdemo:v2026.8.0-12-g4ef3f287
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-ilackarms
+      subfolder: ilackarmsagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: ilackarms-arctl-init-http-container
+    - kind: MCPServer
+      name: ilackarms-arctl-init-stdio
+    - kind: MCPServer
+      name: ilackarms-published-stdio-oci
+    - kind: MCPServer
+      name: ilackarms-published-stdio-npm
+    - kind: MCPServer
+      name: ilackarms-published-stdio-pypi
+  modelProvider: bedrock
+  modelName: us.anthropic.claude-sonnet-4-6

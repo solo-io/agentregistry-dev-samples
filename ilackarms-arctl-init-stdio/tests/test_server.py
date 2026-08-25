@@ -1,0 +1,131 @@
+"""Tests for ilackarms-arctl-init-stdio MCP server core functionality."""
+
+import sys
+from pathlib import Path
+from unittest.mock import mock_open, patch, MagicMock
+import pytest
+
+# Add src to Python path
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+
+from core.server import DynamicMCPServer  # noqa: E402
+from core.utils import get_tool_config, load_config  # noqa: E402
+
+
+class TestDynamicMCPServer:
+    """Test the dynamic MCP server functionality."""
+
+    def test_server_initialization(self) -> None:
+        """Test server initialization."""
+        server = DynamicMCPServer(name="Test Server", tools_dir="src/tools")
+        assert server.name == "Test Server"
+        assert server.tools_dir == Path("src/tools")
+
+    def test_server_with_nonexistent_tools_dir(self) -> None:
+        """Test server behavior with non-existent tools directory."""
+        server = DynamicMCPServer(name="Test Server", tools_dir="nonexistent")
+
+        # Should not raise exception, just print message
+        server.load_tools()
+        assert len(server.loaded_tools) == 0
+
+    def test_load_config(self) -> None:
+        """Test configuration loading."""
+        config_data = """
+        server:
+          name: "Test Server"
+        tools:
+          example_echo:
+            prefix: "[TEST] "
+        """
+
+        with patch("builtins.open", mock_open(read_data=config_data)):
+            config = load_config("test.yaml")
+            assert config["server"]["name"] == "Test Server"
+            assert config["tools"]["example_echo"]["prefix"] == "[TEST] "
+
+    def test_get_tool_config(self) -> None:
+        """Test tool-specific configuration retrieval."""
+        with patch("core.utils.load_config") as mock_load:
+            mock_load.return_value = {
+                "tools": {
+                    "example_echo": {"prefix": "[TEST] "},
+                    "weather": {"api_key_env": "WEATHER_API_KEY"}
+                }
+            }
+
+            echo_config = get_tool_config("example_echo")
+            assert echo_config["prefix"] == "[TEST] "
+
+            weather_config = get_tool_config("weather")
+            assert weather_config["api_key_env"] == "WEATHER_API_KEY"
+
+            # Test non-existent tool
+            empty_config = get_tool_config("nonexistent")
+            assert empty_config == {}
+
+    def test_run_method_default_mode(self) -> None:
+        """Test that run method defaults to http mode."""
+        server = DynamicMCPServer(name="Test Server", tools_dir="src/tools")
+
+        fake_app = MagicMock()
+        fake_app.router.redirect_slashes = True
+        with patch.object(server.mcp, 'http_app', return_value=fake_app), \
+                patch('uvicorn.run') as mock_uvicorn_run:
+            server.run()
+            mock_uvicorn_run.assert_called_once()
+
+    def test_run_method_stdio_mode(self) -> None:
+        """Test that run(transport_mode="stdio") delegates to FastMCP.run()."""
+        server = DynamicMCPServer(name="Test Server", tools_dir="src/tools")
+
+        with patch.object(server.mcp, 'run') as mock_run:
+            server.run(transport_mode="stdio")
+            mock_run.assert_called_once()
+
+    def test_run_method_http_mode(self) -> None:
+        """Test that run method serves an ASGI app via uvicorn in HTTP mode."""
+        server = DynamicMCPServer(name="Test Server", tools_dir="src/tools")
+
+        fake_app = MagicMock()
+        fake_app.router.redirect_slashes = True
+        with patch.object(server.mcp, 'http_app', return_value=fake_app) as mock_http_app, \
+                patch('uvicorn.run') as mock_uvicorn_run:
+            server.run(transport_mode="http", host="0.0.0.0", port=8080)
+
+            mock_http_app.assert_called_once_with(path="/mcp", stateless_http=False)
+            # redirect_slashes must be disabled so /mcp/ does not 307 mid-stream
+            assert fake_app.router.redirect_slashes is False
+            mock_uvicorn_run.assert_called_once()
+            args, kwargs = mock_uvicorn_run.call_args
+            assert kwargs.get("host") == "0.0.0.0"
+            assert kwargs.get("port") == 8080
+
+    def test_http_transport_stateless(self) -> None:
+        """Test that stateless_http flag is forwarded to FastMCP."""
+        server = DynamicMCPServer(name="Test Server", tools_dir="src/tools")
+
+        fake_app = MagicMock()
+        with patch.object(server.mcp, 'http_app', return_value=fake_app) as mock_http_app, \
+                patch('uvicorn.run'):
+            server.run(transport_mode="http", host="localhost", port=3000,
+                       stateless_http=True)
+            mock_http_app.assert_called_once_with(path="/mcp", stateless_http=True)
+
+
+class TestToolLoading:
+    """Test the tool loading mechanism."""
+
+    def test_tool_function_detection(self) -> None:
+        """Test that tool functions are properly detected."""
+        server = DynamicMCPServer(name="Test Server", tools_dir="src/tools")
+
+        # This should load actual tools from the tools directory
+        server.load_tools()
+
+        # Verify that tools were loaded
+        assert len(server.loaded_tools) > 0
+
+        # Verify that the echo tool module specifically was loaded
+        # (loaded_tools stores file stems, not MCP-registered tool names)
+        assert "echo" in server.loaded_tools
