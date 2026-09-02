@@ -1,0 +1,17 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: cjlgsoloioagentdemo
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-dev/dev-walkthrough/cjlg-soloio/agentdemo:v2026.8.0-51-gea81b2c8
+    repository:
+      url: https://github.com/solo-io/agentregistry-dev-samples.git
+      branch: walkthrough-cjlg-soloio
+      subfolder: cjlgsoloioagentdemo
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
+    - kind: MCPServer
+      name: cjlg-soloio-arctl-init-http
