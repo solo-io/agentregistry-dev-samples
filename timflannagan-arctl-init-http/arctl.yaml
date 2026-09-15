@@ -1,0 +1,4 @@
+framework: fastmcp
+language: python
+port: 3000
+transport: http

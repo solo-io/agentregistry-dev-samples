@@ -1,0 +1,31 @@
+"""Example echo tool for timflannagan-arctl-init-stdio MCP server.
+
+This is an example tool showing the basic structure for FastMCP tools.
+Each tool file should contain a function decorated with @mcp.tool().
+"""
+
+from core.server import mcp
+from core.utils import get_tool_config
+
+
+@mcp.tool(description="Echo a message back to the client. Returns the message with any configured prefix.")
+def example_echo(message: str) -> str:
+    """Echo a message back to the client.
+
+    The tool is prefixed `example_` so it doesn't collide with the
+    near-universal `echo` exposed by common reference MCP servers (e.g. the
+    @modelcontextprotocol/server-everything demo). Rename to taste once you
+    replace this scaffold with real functionality.
+
+    Args:
+        message: The message to echo
+
+    Returns:
+        The echoed message with any configured prefix
+    """
+    # Get tool-specific configuration
+    config = get_tool_config("example_echo")
+    prefix = config.get("prefix", "")
+
+    # Return the message with optional prefix
+    return f"{prefix}{message}" if prefix else message

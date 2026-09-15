@@ -1,0 +1,19 @@
+[project]
+name = "timflannaganagentdemo"
+version = "0.1"
+description = "timflannaganagentdemo agent"
+readme = "README.md"
+dependencies = [
+  # Match the Google ADK version supplied by the Kagent base image.
+  "google-adk==1.38.0",
+  # Bedrock uses anthropic.AnthropicBedrock directly (see bedrock_model.py)
+  # rather than LiteLLM, because LiteLLM's bedrock path drops tool
+  # descriptions which the Bedrock API rejects.
+  "anthropic[bedrock]>=0.40",
+]
+# Match the Python interpreter supplied by the Kagent base image.
+requires-python = ">=3.13,<3.14"
+
+[tool.uv]
+# Keep the tested resource detector version stable across builds.
+constraint-dependencies = ["opentelemetry-resourcedetector-gcp==1.14.0"]
