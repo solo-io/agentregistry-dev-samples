@@ -1,0 +1,5 @@
+{
+  "name": "agentregistry-resource-author",
+  "version": "0.1.0",
+  "description": "Drafts one AgentRegistry Prompt resource and validates it with a bundled executable."
+}
