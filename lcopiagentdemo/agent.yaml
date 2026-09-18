@@ -1,0 +1,11 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: lcopiagentdemo
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-dev/dev-walkthrough/lcopi/agentdemo:v2026.9.0-20-gc15e600b-arm64
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
