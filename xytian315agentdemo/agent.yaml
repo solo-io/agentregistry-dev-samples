@@ -1,0 +1,11 @@
+apiVersion: ar.dev/v1alpha1
+kind: Agent
+metadata:
+  name: xytian315agentdemo
+spec:
+  description: Dice-rolling sample ADK-Python agent.
+  source:
+    image: us-docker.pkg.dev/developers-369321/agentregistry-enterprise-dev/dev-walkthrough/xytian315/agentdemo:v2026.9.0-46-gd55ae5a4
+  mcpServers:
+    - kind: MCPServer
+      name: test-mcp-server
